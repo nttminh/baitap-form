@@ -1,4 +1,3 @@
-// Khởi tạo giá trị mặc định cho state
 const initialState = {
     users: [
         {
@@ -13,7 +12,6 @@ const initialState = {
     selectedUser: {},
 };
 
-// Tạo reducer
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
         case "CREATE_USER": {

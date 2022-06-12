@@ -1,19 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-// document.getElementById('input').addEventListener('change', handleChange)
-// function handleChange(evt) {}
-
 class UserForm extends Component {
     constructor(props) {
         super(props);
 
-        // Hiện tại đang muốn dùng giá trị của prop user để gán cho state values
-        // Vấn đề: không biết khi nào prop user thay đổi để gán cho state values
-        console.log(props);
-
         this.state = {
-            // object values dùng để lưu trữ các giá trị của inputs
             values: {
                 firstName: "",
                 lastName: "",
@@ -37,7 +29,6 @@ class UserForm extends Component {
     };
 
     handleSubmit = (evt) => {
-        // Ngăn chặn hành vi reload form
         evt.preventDefault();
 
         if (this.props.user.id) {
@@ -47,15 +38,11 @@ class UserForm extends Component {
             // Tạo mới
             const id = Math.floor(Math.random() * 100);
             const user = { ...this.state.values, id };
-            // Làm sao để thêm object user vào array users trong store???
-            // dispatch action CREATE_USER
             this.props.onCreateUser(user);
         }
     };
 
     componentDidUpdate(prevProps, prevState) {
-        // Vì hàm componentDidUpdate luôn luôn được chạy sau khi props hoặc state thay đổi
-        // Ta sẽ kiểm tra nếu props user thay đổi sẽ set state lại cho object values
         if (prevProps.user.id !== this.props.user.id) {
             this.setState({ values: { ...this.props.user } });
         }
@@ -65,7 +52,6 @@ class UserForm extends Component {
         const { values } = this.state;
 
         return (
-            // Khi click button có type là submit, form sẽ kích hoạt sự kiện onSubmit
             <form onSubmit={this.handleSubmit}>
                 <div className="row">
                     <div className="col-sm-6">

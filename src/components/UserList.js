@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 
 class UserList extends Component {
     render() {
-        // Bóc tách những giá trị của props
         const { users, onDeleteUser, onSelectUser } = this.props;
 
         return (
