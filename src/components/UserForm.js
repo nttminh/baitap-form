@@ -1,159 +1,139 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { createUser, updateUser } from '../Redux/actions/user'
 
-class UserForm extends Component {
-    constructor(props) {
-        super(props);
+function UserForm() {
+    const [values, setValues] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        address: '',
+        dateOfBirth: '',
+    })
+    const user = useSelector(state => state.selectedUser)
+    const dispatch = useDispatch()
 
-        this.state = {
-            values: {
-                firstName: "",
-                lastName: "",
-                email: "",
-                address: "",
-                dateOfBirth: "",
-            },
-        };
+    const handleChange = (event) => {
+        setValues(prevValues => ({
+            ...prevValues,
+            [event.target.name]: event.target.value,
+        }))
     }
 
-    handleChange = (evt) => {
-        const { value, name } = evt.target;
-        // name: firstName || lastName || email || address || dateOfBirth
 
-        this.setState((state) => ({
-            values: {
-                ...state.values,
-                [name]: value,
-            },
-        }));
-    };
+    const handleSubmit = (event) => {
+        event.preventDefault()
 
-    handleSubmit = (evt) => {
-        evt.preventDefault();
-
-        if (this.props.user.id) {
+        if (user.id) {
             // Cập nhật
-            this.props.onUpdateUser(this.props.user.id, this.state.values);
+            const action = updateUser(user.id, values)
+            dispatch(action)
         } else {
             // Tạo mới
-            const id = Math.floor(Math.random() * 100);
-            const user = { ...this.state.values, id };
-            this.props.onCreateUser(user);
+            const id = Math.floor(Math.random() * 100)
+            const newUser = { ...values, id }
+            const action = createUser(newUser)
+            dispatch(action)
         }
-    };
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.user.id !== this.props.user.id) {
-            this.setState({ values: { ...this.props.user } });
-        }
+        setValues({
+            firstName: '',
+            lastName: '',
+            email: '',
+            address: '',
+            dateOfBirth: '',
+        })
     }
 
-    render() {
-        const { values } = this.state;
+    useEffect(() => {
+        if (user.id) {
+            setValues(user)
+        }
+    }, [user])
 
-        return (
-            <form onSubmit={this.handleSubmit}>
-                <div className="row">
-                    <div className="col-sm-6">
-                        <div className="mb-3">
-                            <label htmlFor="firstName" className="form-label">
-                                First Name
-                            </label>
-                            <input
-                                type="text"
-                                id="firstName"
-                                className="form-control"
-                                name="firstName"
-                                value={values.firstName}
-                                onChange={this.handleChange}
-                            />
-                        </div>
 
-                        <div className="mb-3">
-                            <label htmlFor="lastName" className="form-label">
-                                Last Name
-                            </label>
-                            <input
-                                type="text"
-                                id="lastName"
-                                className="form-control"
-                                name="lastName"
-                                value={values.lastName}
-                                onChange={this.handleChange}
-                            />
-                        </div>
-
-                        <div className="mb-3">
-                            <label htmlFor="email" className="form-label">
-                                Email
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                className="form-control"
-                                name="email"
-                                value={values.email}
-                                onChange={this.handleChange}
-                            />
-                        </div>
+    return (
+        <form onSubmit={handleSubmit}>
+            <div className="row">
+                <div className="col-sm-6">
+                    <div className="mb-3">
+                        <label htmlFor="firstName" className="form-label">
+                            First Name
+                        </label>
+                        <input
+                            type="text"
+                            id="firstName"
+                            className="form-control"
+                            name="firstName"
+                            value={values.firstName}
+                            onChange={handleChange}
+                        />
                     </div>
 
-                    <div className="col-sm-6">
-                        <div className="mb-3">
-                            <label htmlFor="address" className="form-label">
-                                Address
-                            </label>
-                            <input
-                                type="text"
-                                id="address"
-                                className="form-control"
-                                name="address"
-                                value={values.address}
-                                onChange={this.handleChange}
-                            />
-                        </div>
-
-                        <div className="mb-3">
-                            <label htmlFor="dateOfBirth" className="form-label">
-                                Date of Birth
-                            </label>
-                            <input
-                                type="text"
-                                id="dateOfBirth"
-                                className="form-control"
-                                name="dateOfBirth"
-                                value={values.dateOfBirth}
-                                onChange={this.handleChange}
-                            />
-                        </div>
+                    <div className="mb-3">
+                        <label htmlFor="lastName" className="form-label">
+                            Last Name
+                        </label>
+                        <input
+                            type="text"
+                            id="lastName"
+                            className="form-control"
+                            name="lastName"
+                            value={values.lastName}
+                            onChange={handleChange}
+                        />
                     </div>
 
-                    <button className="btn btn-success">Submit</button>
+                    <div className="mb-3">
+                        <label htmlFor="email" className="form-label">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            className="form-control"
+                            name="email"
+                            value={values.email}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
-            </form>
-        );
-    }
+
+                <div className="col-sm-6">
+                    <div className="mb-3">
+                        <label htmlFor="address" className="form-label">
+                            Address
+                        </label>
+                        <input
+                            type="text"
+                            id="address"
+                            className="form-control"
+                            name="address"
+                            value={values.address}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label htmlFor="dateOfBirth" className="form-label">
+                            Date of Birth
+                        </label>
+                        <input
+                            type="text"
+                            id="dateOfBirth"
+                            className="form-control"
+                            name="dateOfBirth"
+                            value={values.dateOfBirth}
+                            onChange={handleChange}
+                        />
+                    </div>
+                </div>
+
+                <button className="btn btn-success">{user.id ? "Update" : "Create"}</button>
+            </div>
+        </form>
+    )
 }
 
-const mapStateToProps = (state) => {
-    return {
-        // key: state.user.selectedUser.id,
-        user: state.selectedUser,
-    };
-};
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onCreateUser: (user) => {
-            const action = { type: "CREATE_USER", user };
-            dispatch(action);
-        },
-
-        onUpdateUser: (userId, user) => {
-            const action = { type: "UPDATE_USER", userId, user };
-            dispatch(action);
-        },
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserForm);
+export default UserForm
